@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+body {
+  background-color: rgba(141, 138, 138, 0.685);
+}
+
+#main {
+  text-align:center;
+  margin: 1em;
+}
+
+.loginBody{
+  text-align: center;
+  background-color: #ad1919fa;
+}
+
+#pageTitle2{
+  text-align: center;
+  width: 50%;
+}
+
+#send:active{
+    top: 4px;
+    text-shadow: none;
+}
+
+#comment {
+  color: white ;
+  margin: 0.5em 2em 1em 2em;
+  padding: 1em;
+  background-color: #b63a3a;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.4);
+  border-radius:0.3em;
+} 
+
+
+
