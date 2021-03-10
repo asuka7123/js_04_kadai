@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <title>掲示板</title>
+</head>
+
+<body>
+      <!-- ここにタスク管理ボードが表示される -->
+    <main id="main">
+    <img src="img/jazz_title.jpg" id="pageTitle2" alt="">
+    <div>名前<br><input type="text" name="" id="username" required></div>
+    <div>コメント<br><textarea name="" id="text" cols="30" rows="10" required></textarea></div>  
+    <div><button id="send">送信</button></div>
+  
+  </main>
+  
+    <!-- 保存されたデータが表示される箇所 -->
+    <div id="output"></div> 
+  
+    <!-- ブラウザの画面に見える内容 -->
+  
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ 
+    <!--** 以下Firebase **-->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+
+    <script>
+      var firebaseConfig = {
+      apiKey: "", 
+      authDomain: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: "",
+      databaseURL: "",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script>
+    //firebaseのデーターベース（保存させる場所）を使うことを示す
+    const newPostRef = firebase.database().ref();
+
+    // ここから下にjqueryの処理を書く
+    function toLocaleString(date){
+        return(
+            [date.getFullYear(),date.getMonth()+1,date.getDate()].join("/")+" "+
+            date.toLocaleTimeString()
+            );
+    }
+
+    //送信処理１（クリックされたとき）
+    $("#send").on("click",function(){
+      // データを登録で送る
+      newPostRef.push({
+        username: $("#username").val(), //名前
+        text: $("#text").val(),//テキストエリア
+        date: toLocaleString(new Date()),//日付
+      })
+      $("#username").val(""); //空にする
+      $("#text").val(""); //空にする
+    //   $("#date").val(""); //空にする
+    });
+    
+    //送信処理２（コメントエリアでEnterを押されたとき）
+    $("#text").on("keydown", function (e) {
+      if (e.keyCode === 13) {
+        newPostRef.push({
+          username: $("#username").val(), //名前
+          text: $("#text").val(), //テキストエリア
+          date: toLocaleString(new Date()),//日付
+        })
+        $("#text").val(""); //空にする
+        $("#username").val(""); //空にする
+      }
+    })    
+
+    // 受信処理
+    newPostRef.on("child_added", function (data) {
+      let v = data.val(); //ここに保存されたデータが全て入ってくる
+      // let k = data.key; //ユニークkeyを取得　→ユニークkeyは特定のものを指定して消すことができる
+      console.log(v); //vの変数に入っているオブジェクトを全てみる
+      let str1 = `<p>${v.username}</p>`;
+      let str2 = `<p>${v.text}</p>`;
+      let str3 = `<p>${v.date}</p>`;
+    //   let str4 = `<p>${new Date()};</p>`;
+
+      // ここでデータをhtmlに埋め込む
+      $("#output").prepend(`<div id="comment">${str1}${str2}${str3}</div>`);　//prependは上から追加、appendは下から追加
+    })
+  
+    </script>
+
+</body>
+</html>
